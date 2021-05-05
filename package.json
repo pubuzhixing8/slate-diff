@@ -1,0 +1,26 @@
+{
+  "name": "slate-diff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pubuzhixing8/slate-diff.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pubuzhixing8/slate-diff/issues"
+  },
+  "homepage": "https://github.com/pubuzhixing8/slate-diff#readme",
+  "devDependencies": {
+    "@types/node": "^15.0.2",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "slate": "^0.62.0"
+  }
+}

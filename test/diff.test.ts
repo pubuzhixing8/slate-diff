@@ -13,7 +13,13 @@ describe('diff', () => {
         ];
         const doc2 = [
             {
-                type: 'paragraph',
+                type: 'heding-two',
+                children: [
+                    {text: 'adsl'}
+                ]
+            },
+            {
+                type: 'heding-one',
                 children: [
                     {text: 'adsladsl'}
                 ]

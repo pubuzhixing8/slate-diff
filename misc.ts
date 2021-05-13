@@ -4,7 +4,7 @@
 // obj1.  For each property P of obj2 not specified in obj1, the
 // corresponding value obj1[P] is set (all in a new copy of obj1) to
 // be obj2[P].
-const defaults = function (obj1, obj2, allow_extra, strict) {
+const defaults = function (obj1, obj2, allow_extra?, strict?) {
     let err;
     if (strict == null) {
         strict = false;
@@ -30,7 +30,7 @@ const defaults = function (obj1, obj2, allow_extra, strict) {
         // We put explicit traces before the errors in this function,
         // since otherwise they can be very hard to debug.
         err = `BUG -- Traceback -- misc.defaults -- TypeError: function takes inputs as an object ${error()}`;
-        if (strict || DEBUG || TEST_MODE) {
+        if (strict) {
             throw new Error(err);
         } else {
             console.log(err);
@@ -40,11 +40,11 @@ const defaults = function (obj1, obj2, allow_extra, strict) {
     }
     const r = {};
     for (var prop in obj2) {
-        val = obj2[prop];
+        let val = obj2[prop];
         if (obj1.hasOwnProperty(prop) && obj1[prop] != null) {
             if (obj2[prop] === exports.defaults.required && obj1[prop] == null) {
                 err = `misc.defaults -- TypeError: property '${prop}' must be specified: ${error()}`;
-                if (strict || DEBUG || TEST_MODE) {
+                if (strict) {
                     throw new Error(err);
                 } else {
                     console.warn(err);
@@ -56,7 +56,7 @@ const defaults = function (obj1, obj2, allow_extra, strict) {
             // only record not undefined properties
             if (obj2[prop] === exports.defaults.required) {
                 err = `misc.defaults -- TypeError: property '${prop}' must be specified: ${error()}`;
-                if (strict || DEBUG || TEST_MODE) {
+                if (strict) {
                     throw new Error(err);
                 } else {
                     console.warn(err);
@@ -69,11 +69,11 @@ const defaults = function (obj1, obj2, allow_extra, strict) {
     }
     if (!allow_extra) {
         for (prop in obj1) {
-            val = obj1[prop];
+            let val = obj1[prop];
             if (!obj2.hasOwnProperty(prop)) {
                 err = `misc.defaults -- TypeError: got an unexpected argument '${prop}' ${error()}`;
                 console.trace();
-                if (strict || DEBUG || TEST_MODE) {
+                if (strict) {
                     throw new Error(err);
                 } else {
                     console.warn(err);

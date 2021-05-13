@@ -10,7 +10,7 @@ some code in editor_jupyter.coffee.
 
 import { Node, Operation } from "slate";
 import { dmp } from "./util";
-import { StringCharMapping } from "smc-util/misc";
+import { StringCharMapping } from "./misc";
 import { handleChangeOneNode } from "./handle-change-one-node";
 import { handleChangeTextNodes, isAllText } from "./handle-change-text-nodes";
 

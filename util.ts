@@ -1,6 +1,6 @@
 import { CompressedPatch, Patch } from "./types";
 
-const { diff_match_patch } = require("diff-match-patch");
+const { diff_match_patch } = require("./diff-match-patch.js");
 
 export const dmp = new diff_match_patch();
 dmp.Diff_Timeout = 0.2; // computing a diff won't block longer than about 0.2s
@@ -80,15 +80,6 @@ export function apply_patch(
         }
     }
     return [x[0], clean];
-}
-
-const { cmp_array } = require("smc-util/misc");
-
-export function patch_cmp(a: Patch, b: Patch): number {
-    return cmp_array(
-        [a.time.valueOf(), a.user_id],
-        [b.time.valueOf(), b.user_id]
-    );
 }
 
 export function time_cmp(a: Date, b: Date): number {

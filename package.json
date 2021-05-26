@@ -4,7 +4,8 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "test": "tsdx test --coverage"
+    "test": "tsdx test --coverage",
+    "build": "tsdx build --entry slate-diff.ts"
   },
   "repository": {
     "type": "git",

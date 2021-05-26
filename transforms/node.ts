@@ -1,16 +1,11 @@
-/*
- *  This file is part of CoCalc: Copyright © 2020 Sagemath, Inc.
- *  License: AGPLv3 s.t. "Commons Clause" – see LICENSE.md for details
- */
-
 import { isEqual } from "lodash";
-import { copy_without } from "./misc";
+import { copyWithout } from "../utils/copy-without";
 import { Node, Operation } from "slate";
-import { slateDiff } from "./diff";
+import { slateDiff } from "../slate-diff";
 
 // Replace node at path by nextNode using the first
 // strategy that works.
-export function handleChangeOneNode(
+export function transformNode(
     node: Node,
     nextNode: Node,
     path: number[]
@@ -48,8 +43,8 @@ STRATEGIES.push((node, nextNode, path) => {
         node["children"] != null &&
         nextNode["children"] != null &&
         isEqual(
-            copy_without(node, ["children"]),
-            copy_without(nextNode, ["children"])
+            copyWithout(node, ["children"]),
+            copyWithout(nextNode, ["children"])
         )
     ) {
         return slateDiff(node["children"], nextNode["children"], path);

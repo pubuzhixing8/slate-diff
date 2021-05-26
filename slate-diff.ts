@@ -1,51 +1,25 @@
-/*
- *  This file is part of CoCalc: Copyright © 2020 Sagemath, Inc.
- *  License: AGPLv3 s.t. "Commons Clause" – see LICENSE.md for details
- */
-
-/*
-NOTE: The diff function below is very similar to
-some code in editor_jupyter.coffee.
-*/
-
-import { Node, Operation } from "slate";
-import { dmp } from "./util";
-import { StringCharMapping } from "./misc";
-import { handleChangeOneNode } from "./handle-change-one-node";
-import { handleChangeTextNodes, isAllText } from "./handle-change-text-nodes";
-
-// We could instead use
-//    import * as stringify from "json-stable-stringify";
-// which might sometimes avoid a safe "false positive" (i.e., slightly
-// less efficient patch), but is significantly slower.
-const stringify = JSON.stringify;
-
-function docToStrings(doc: Node[]): string[] {
-  const v: string[] = [];
-  for (const node of doc) {
-    v.push(stringify(node));
-  }
-  return v;
-}
+import { Node, Operation, Text } from "slate";
+import { dmp } from "./utils/dmp";
+import { StringCharMapping } from "./string-char-mapping";
+import { childrenToStrings } from "./utils/children-to-strings";
+import { transformTextNodes } from "./transforms/text";
+import { transformNode } from "./transforms/node";
 
 export function slateDiff(
   doc0: Node[],
   doc1: Node[],
   path: number[] = []
 ): Operation[] {
-  // const t0 = path.length == 0 ? new Date().valueOf() : 0;
   const string_mapping = new StringCharMapping();
   // 根节点通过stringify转换为字符串，传入节点数组 返回 字符串数组
-  const s0 = docToStrings(doc0);
-  const s1 = docToStrings(doc1);
+  const s0 = childrenToStrings(doc0);
+  const s1 = childrenToStrings(doc1);
   // 字符串到字符的映射 StringCharMapping 会存储每一个字符串与字符的映射关系，可以实现反向查找
   const m0 = string_mapping.to_string(s0);
   const m1 = string_mapping.to_string(s1);
-  console.log(m0, 'm0');
   // json转换为字符进行diff 
   const diff = dmp.diff_main(m0, m1);
   const operations: Operation[] = [];
-  //console.log({ diff, to_string: string_mapping._to_string });
 
   function letterToNode(x: string): Node {
     const node = JSON.parse(string_mapping._to_string[x]);
@@ -81,10 +55,10 @@ export function slateDiff(
         // next one is an insert, so this is really a "replace".
         const nextVal = diff[i + 1][1];
         const nextNodes = stringToNodes(nextVal);
-        if (isAllText(nodes) && isAllText(nextNodes)) {
+        if (Text.isTextList(nodes) && Text.isTextList(nextNodes)) {
           // Every single node involved is a text node.  This can be done
           // via modifying and splitting and joining.
-          for (const op of handleChangeTextNodes(
+          for (const op of transformTextNodes(
             nodes,
             nextNodes,
             path.concat([index])
@@ -97,7 +71,7 @@ export function slateDiff(
         }
         while (nodes.length > 0 && nextNodes.length > 0) {
           // replace corresponding node
-          for (const op of handleChangeOneNode(
+          for (const op of transformNode(
             nodes[0],
             nextNodes[0],
             path.concat([index])
@@ -155,9 +129,6 @@ export function slateDiff(
     }
     throw Error("BUG");
   }
-  /* if (path.length == 0) {
-    console.log("time: slateDiff", new Date().valueOf() - t0, "ms");
-  }*/
 
   return operations;
 }

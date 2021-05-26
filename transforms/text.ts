@@ -1,15 +1,7 @@
-/*
- *  This file is part of CoCalc: Copyright © 2020 Sagemath, Inc.
- *  License: AGPLv3 s.t. "Commons Clause" – see LICENSE.md for details
- */
-
-import { Operation, Text } from "slate";
-import { dmp } from "./util";
-import { len } from "./misc";
-
-export function nextPath(path: number[]): number[] {
-    return [...path.slice(0, path.length - 1), path[path.length - 1] + 1];
-}
+import { Operation, Path, Text } from "slate";
+import { dmp } from "../utils/dmp";
+import { getProperties } from "../utils/get-properties";
+import { len } from "../utils/len";
 
 interface Op {
     type: "insert_text" | "remove_text";
@@ -17,7 +9,40 @@ interface Op {
     text: string;
 }
 
-export function slateTextDiff(a: string, b: string): Op[] {
+// Transform some text nodes into some other text nodes.
+export function transformTextNodes(
+    nodes: Text[],
+    nextNodes: Text[],
+    path: number[]
+): Operation[] {
+    if (nodes.length == 0) throw Error("must have at least one nodes");
+    if (nextNodes.length == 0) throw Error("must have at least one nextNodes");
+
+    const operations: Operation[] = [];
+
+    // 匹配nodes合成一个text节点
+    let node = nodes[0];
+    if (nodes.length > 1) {
+        // join together everything in nodes first
+        for (let i = 1; i < nodes.length; i++) {
+            operations.push({
+                type: "merge_node",
+                path: Path.next(path),
+                position: 0, // make TS happy; seems ignored in source code
+                properties: {}, // make TS happy; seems ignored in source code -- probably a typescript error.
+            });
+            node = { ...node, ...{ text: node.text + nodes[i].text } }; // update text so splitTextNodes can use this below.
+        }
+    }
+
+    for (const op of splitTextNodes(node, nextNodes, path)) {
+        operations.push(op);
+    }
+
+    return operations;
+}
+
+function slateTextDiff(a: string, b: string): Op[] {
     const diff = dmp.diff_main(a, b);
 
     const operations: Op[] = [];
@@ -55,7 +80,7 @@ via a combination of remove_text/insert_text as above and split_node
 operations.
 */
 
-export function splitTextNodes(
+function splitTextNodes(
     node: Text,
     split: Text[],
     path: number[] // the path to node.
@@ -113,7 +138,7 @@ export function splitTextNodes(
             properties: newProperties,
         });
 
-        splitPath = nextPath(splitPath);
+        splitPath = Path.next(splitPath);
         properties = getProperties(nextPart);
     }
     return operations;
@@ -130,40 +155,3 @@ is just to keep the operations simple and minimal.
 Also setting to undefined / false-ish for a *text* node property
 is equivalent to not having it regarding everything else.
 */
-
-
-// Get object that will set the properties of before
-// to equal the properties of node, in terms of the
-// slatejs set_node operation.  If before is not given,
-// just gives all the non-text propers of goal.
-function getProperties(goal: Text, before?: Text): any {
-    const props: any = {};
-    for (const x in goal) {
-        if (x != "text") {
-            if (before == null) {
-                if (goal[x]) {
-                    props[x] = goal[x];
-                }
-                continue;
-            } else {
-                if (goal[x] !== before[x]) {
-                    if (goal[x]) {
-                        props[x] = goal[x];
-                    } else {
-                        props[x] = undefined; // remove property...
-                    }
-                }
-            }
-        }
-    }
-    if (before != null) {
-        // also be sure to explicitly remove props not in goal
-        // WARNING: this might change in slatejs; I saw a discussion about this.
-        for (const x in before) {
-            if (x != "text" && goal[x] == null) {
-                props[x] = undefined;
-            }
-        }
-    }
-    return props;
-}

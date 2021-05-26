@@ -17,6 +17,7 @@ export function handleChangeTextNodes(
 
     const operations: Operation[] = [];
 
+    // 匹配nodes合成一个text节点
     let node = nodes[0];
     if (nodes.length > 1) {
         // join together everything in nodes first

@@ -2,6 +2,7 @@ import { slateDiff } from "../diff";
 import * as basic from './basic';
 import * as addBlock from './add-block';
 import * as addTextAndAddMark from './add-text-and-add-mark';
+import * as multipleText from './multiple-text';
 
 
 describe('diff', () => {
@@ -15,5 +16,9 @@ describe('diff', () => {
 
     test('add-text-and-add-mark', () => {
         expect(slateDiff(addTextAndAddMark.doc1, addTextAndAddMark.doc2)).toBe([]);
+    });
+
+    test('multiple-text', () => {
+        expect(slateDiff(multipleText.doc1, multipleText.doc2)).toBe([]);
     });
 });

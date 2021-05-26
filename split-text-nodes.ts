@@ -70,6 +70,7 @@ export function splitTextNodes(
             },
         ];
     }
+    // 首先处理文本 生成模式text字符串转换成目标text字符串的操作
     // First operation: transform the text node to the concatenation of result.
     let splitText = "";
     for (const { text } of split) {

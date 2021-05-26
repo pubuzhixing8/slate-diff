@@ -35,10 +35,14 @@ export function slateDiff(
 ): Operation[] {
   // const t0 = path.length == 0 ? new Date().valueOf() : 0;
   const string_mapping = new StringCharMapping();
+  // 根节点通过stringify转换为字符串，传入节点数组 返回 字符串数组
   const s0 = docToStrings(doc0);
   const s1 = docToStrings(doc1);
+  // 字符串到字符的映射 StringCharMapping 会存储每一个字符串与字符的映射关系，可以实现反向查找
   const m0 = string_mapping.to_string(s0);
   const m1 = string_mapping.to_string(s1);
+  console.log(m0, 'm0');
+  // json转换为字符进行diff 
   const diff = dmp.diff_main(m0, m1);
   const operations: Operation[] = [];
   //console.log({ diff, to_string: string_mapping._to_string });

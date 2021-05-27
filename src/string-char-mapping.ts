@@ -30,6 +30,6 @@ export class StringCharMapping {
     }
 
     public to_array(x: string): string[] {
-        return Array.from(x).map((s) => this.to_string[s]);
+        return Array.from(x).map((s) => this.to_string([s]));
     }
 }

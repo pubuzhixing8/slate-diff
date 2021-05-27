@@ -49,6 +49,7 @@ STRATEGIES.push((node, nextNode, path) => {
     ) {
         return slateDiff(node["children"], nextNode["children"], path);
     }
+    return [];
 });
 
 /* Common special case -- only the value property changes:

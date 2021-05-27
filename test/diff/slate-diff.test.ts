@@ -3,7 +3,6 @@ import * as insertText from './data/insert-text';
 import * as setTextMark from './data/set-text-mark';
 import * as mergeText from './data/merge-text';
 
-
 describe('slate-diff', () => {
     test('insert-text', () => {
         expect(slateDiff(insertText.doc1, insertText.doc2)).toStrictEqual(insertText.expected);

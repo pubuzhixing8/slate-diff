@@ -132,3 +132,7 @@ export function slateDiff(
 
   return operations;
 }
+
+export function slatePatch() {
+  
+}

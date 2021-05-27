@@ -1,4 +1,4 @@
-import { slateDiff } from "../src/slate-diff";
+import { slateDiff } from "../../src/slate-diff";
 import * as insertText from './data/insert-text';
 import * as setTextMark from './data/set-text-mark';
 import * as mergeText from './data/merge-text';

@@ -1,5 +1,8 @@
 import { Changeset } from '../../src/utils/changeset';
 import { dmp } from '../../src/utils/dmp';
+import { slateOperationalTransformation } from '../../src/slate-ot';
+import * as modifyDifferentParagraph from './data/modify-different-paragraph';
+
 
 describe('changeset', () => {
     test('modify same char', () => {
@@ -30,4 +33,11 @@ describe('changeset', () => {
         const results = csB_new.apply(textA_new);
         expect(results).toBe(' CCDD');
     })
+});
+
+describe('slateOperationalTransformation', () => {
+    test('modify-different-paragraph', () => {
+        const operations = slateOperationalTransformation(modifyDifferentParagraph.old, modifyDifferentParagraph.newA, modifyDifferentParagraph.newB);
+        expect(operations).toStrictEqual(modifyDifferentParagraph.expected);
+    });
 });

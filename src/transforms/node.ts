@@ -12,7 +12,7 @@ export function transformNode(
 ): Operation[] {
     for (const strategy of STRATEGIES) {
         const ops = strategy(node, nextNode, path);
-        if (ops != null) {
+        if (ops && ops.length > 0) {
             return ops;
         }
     }

@@ -3,6 +3,7 @@ import * as insertText from './data/insert-text';
 import * as setTextMark from './data/set-text-mark';
 import * as mergeText from './data/merge-text';
 import * as insertAndUpdateParagraph from './data/insert-and-update-paragraph';
+import * as insertAndUpdateTwoParagraphs from './data/insert-and-update-two-paragraphs';
 
 describe('slate-diff', () => {
     test('insert-text', () => {
@@ -20,5 +21,10 @@ describe('slate-diff', () => {
     test('insert-and-update-paragraph', () => {
         const diff = slateDiff(insertAndUpdateParagraph.doc1, insertAndUpdateParagraph.doc2);
         expect(diff).toStrictEqual(insertAndUpdateParagraph.expected);
+    });
+
+    test('insert-and-update-two-paragraphs', () => {
+        const diff = slateDiff(insertAndUpdateTwoParagraphs.doc1, insertAndUpdateTwoParagraphs.doc2);
+        expect(diff).toStrictEqual([]);
     });
 });

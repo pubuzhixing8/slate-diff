@@ -46,7 +46,14 @@ const doc2 = [
     {
         type: 'paragraph',
         children: [
-            { text: 'This is the fourth paragraph.' }
+            { text: 'This is the fifth paragraph.' }
+        ],
+        key: '5'
+    },
+    {
+        type: 'paragraph',
+        children: [
+            { text: 'This is the fourth paragraph, and insert some text.' }
         ],
         key: '4'
     }
@@ -65,6 +72,21 @@ const expected = [
     {
         "offset": 27,
         "path": [2, 0],
+        "text": ", and insert some text",
+        "type": "insert_text"
+    },
+    {
+        "node": {
+            "children": [{ "text": "This is the fifth paragraph." }],
+            "key": "5",
+            "type": "paragraph"
+        },
+        "path": [3],
+        "type": "insert_node"
+    },
+    {
+        "offset": 27,
+        "path": [4, 0],
         "text": ", and insert some text",
         "type": "insert_text"
     }

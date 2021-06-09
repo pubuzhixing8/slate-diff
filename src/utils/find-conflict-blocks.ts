@@ -1,4 +1,7 @@
 import { StringCharMapping } from "string-char-mapping";
+import { findSameElementFromElements } from "./find-same-block-from-insert-nodes";
+import { stringToNodes } from "./string-to-nodes";
+import { Node } from 'slate';
 
 export function findConflictBlocks(diffA: any[], diffB: any[], stringCharMapping: StringCharMapping) {
     let i = 0;
@@ -13,7 +16,21 @@ export function findConflictBlocks(diffA: any[], diffB: any[], stringCharMapping
             continue;
         }
         
-        if (op === -1 && i < diffA.length - 1 && diffA[i + 1][0] == 1) { // 修改场景
+        if (op === -1 && i < diffA.length - 1 && diffA[i + 1][0] == 1) {
+            const nodes = stringToNodes(val, stringCharMapping);
+            const nextVal = diffA[i + 1][1];
+            const nextNodes = stringToNodes(nextVal, stringCharMapping);
+            let originNode: null | Node = null;
+            let matchedNode: null | Node = null;
+            for (const node of nodes) {
+                const matched = findSameElementFromElements(node, nextNodes);
+                if (matched) {
+                    originNode = node;
+                    matchedNode = matched;
+                    break;
+                }
+            }
+
             const sameBlockOp = findSameBlockFromAnotherDiff(diffA[i], diffB);
             if (sameBlockOp) {
                 sameBlockModify.set(val, { opA: diffA[i], nextOpA: diffA[i + 1], opB: sameBlockOp.op, nextOpB: sameBlockOp.nextOp })

@@ -30,8 +30,6 @@ export function slateOperationalTransformation(
     var csANew = csA.apply(oldString);
     const results = csBNew.apply(csANew);
 
-    
-
     // json转换为字符进行diff 
     const diff = dmp.diff_main(oldString, results);
     return generateOperations(diff, path, string_mapping);

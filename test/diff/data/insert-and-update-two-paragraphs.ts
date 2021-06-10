@@ -85,7 +85,7 @@ const expected = [
         "type": "insert_node"
     },
     {
-        "offset": 27,
+        "offset": 28,
         "path": [4, 0],
         "text": ", and insert some text",
         "type": "insert_text"

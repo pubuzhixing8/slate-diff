@@ -25,6 +25,6 @@ describe('slate-diff', () => {
 
     test('insert-and-update-two-paragraphs', () => {
         const diff = slateDiff(insertAndUpdateTwoParagraphs.doc1, insertAndUpdateTwoParagraphs.doc2);
-        expect(diff).toStrictEqual([]);
+        expect(diff).toStrictEqual(insertAndUpdateTwoParagraphs.expected);
     });
 });

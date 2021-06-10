@@ -1,8 +1,8 @@
-import { Operation, Path, Text, Node } from "slate";
+import { Operation, Path, Text } from "slate";
 import { StringCharMapping } from "string-char-mapping";
 import { transformNode } from "../transforms/node";
 import { transformTextNodes } from "../transforms/text";
-import { findSameElementFromElements } from "./find-same-block-from-insert-nodes";
+import { diffNodes, NodeRelatedItem } from "./diff-nodes";
 import { stringToNodes } from "./string-to-nodes";
 
 export function generateOperations(diff: { 0: number, 1: string}[], path: Path, stringCharMapping: StringCharMapping) {
@@ -39,71 +39,32 @@ export function generateOperations(diff: { 0: number, 1: string}[], path: Path, 
               i += 2; // this consumed two entries from the diff array.
               continue;
             }
-
-            let originNode: null | Node = null;
-            let matchedNode: null | Node = null;
-            for (const node of nodes) {
-              const matched = findSameElementFromElements(node, nextNodes);
-              if (matched) {
-                originNode = node;
-                matchedNode = matched;
-                break;
-              }
-            }
-    
-            if (matchedNode && originNode) {
-              const originIndex = nodes.indexOf(originNode);
-              const matchedIndex = nextNodes.indexOf(matchedNode);
-              // delete anything left in nodes
-              for (let i = 0; i < originIndex; i++) {
+            const diffResult = diffNodes(nodes, nextNodes);
+            diffResult.forEach((item: NodeRelatedItem) => {
+              if (item.delete) {
                 operations.push({
                   type: "remove_node",
                   path: path.concat([index]),
-                  node: nodes[0],
+                  node: item.originNode,
                 } as Operation);
-                nodes.shift();
               }
-              for (let i = 0; i < matchedIndex; i++) {
+              if (item.insert) {
                 operations.push({
                   type: "insert_node",
                   path: path.concat([index]),
-                  node: nextNodes[0],
+                  node: item.originNode,
                 } as Operation);
                 index += 1;
-                nextNodes.shift();
               }
-            }
-    
-            while (nodes.length > 0 && nextNodes.length > 0) {
-              // replace corresponding node
-              for (const op of transformNode(
-                nodes[0],
-                nextNodes[0],
-                path.concat([index])
-              )) {
-                operations.push(op);
+              if (item.relatedNode) {
+                operations.push(...transformNode(
+                  item.originNode,
+                  item.relatedNode,
+                  path.concat([index])
+                ))
+                index += 1;
               }
-              index += 1;
-              nodes.shift();
-              nextNodes.shift();
-            }
-            // delete anything left in nodes
-            for (const node of nodes) {
-              operations.push({
-                type: "remove_node",
-                path: path.concat([index]),
-                node,
-              } as Operation);
-            }
-            // insert anything left in nextNodes
-            for (const node of nextNodes) {
-              operations.push({
-                type: "insert_node",
-                path: path.concat([index]),
-                node,
-              } as Operation);
-              index += 1;
-            }
+            });
             i += 2; // this consumed two entries from the diff array.
             continue;
           } else {

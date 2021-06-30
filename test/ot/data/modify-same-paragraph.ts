@@ -23,5 +23,14 @@ const newB = [
     }
 ];
 const expected = [
+    {
+        offset: 8,
+        path: [
+            0,
+            0,
+        ],
+        text: " 前端 后端",
+        type: "insert_text",
+    },
 ];
 export { old, newA, newB, expected };

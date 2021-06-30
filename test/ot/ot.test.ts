@@ -3,6 +3,7 @@ import { dmp } from '../../src/utils/dmp';
 import { slateOperationalTransformation } from '../../src/slate-ot';
 import * as modifyDifferentParagraph from './data/modify-different-paragraph';
 import * as modifySameParagraph from './data/modify-same-paragraph';
+import * as insertTextDifferentOffset from './data/insert-text-different-offset-paragraph';
 
 
 describe('changeset', () => {
@@ -44,5 +45,9 @@ describe('slateOperationalTransformation', () => {
     test('modify-same-paragraph', () => {
         const operations = slateOperationalTransformation(modifySameParagraph.old, modifySameParagraph.newA, modifySameParagraph.newB);
         expect(operations).toStrictEqual(modifySameParagraph.expected);
+    });
+    test('insert-text-different-offset-paragraph', () => {
+        const operations = slateOperationalTransformation(insertTextDifferentOffset.old, insertTextDifferentOffset.newA, insertTextDifferentOffset.newB);
+        expect(operations).toStrictEqual(insertTextDifferentOffset.expected);
     });
 });

@@ -1,4 +1,4 @@
-import { Node, Path, TextOperation, NodeOperation } from 'slate';
+import { Node, Path, TextOperation, NodeOperation, Point } from 'slate';
 import { slateDiff } from './slate-diff';
 
 /**
@@ -29,11 +29,15 @@ export function slateOperationalTransformation(
                 if ((operationA as TextOperation).offset === (operationB as TextOperation).offset) {
                     (operationA as TextOperation).text = (operationA as TextOperation).text + (operationB as TextOperation).text;
                     mergedOperations.push(operationA);
-                    operationsA.splice(0, 1);
-                    operationsB.splice(0, 1);
+                } else {
+                    mergedOperations.push(operationA);
+                    (operationB as TextOperation).offset = (Point.transform({ path: operationB.path, offset: (operationB as TextOperation).offset }, operationA) as any).offset;
+                    mergedOperations.push(operationB);
                 }
+                operationsA.splice(0, 1);
+                operationsB.splice(0, 1);
+                continue;
             }
-            continue;
         }
         const isFirstA = Path.isBefore(operationA.path, operationB.path);
         if (isFirstA) {

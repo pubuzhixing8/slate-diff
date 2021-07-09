@@ -25,11 +25,33 @@ export function slateOperationalTransformation(
         const isEqual = Path.equals(operationA.path, operationB.path);
         if (isEqual) {
             // 处理冲突
-            if (operationA.type === 'insert_text' || operationB.type === 'insert_text') {
+            if (operationA.type === 'insert_text' && operationB.type === 'insert_text') {
                 if ((operationA as TextOperation).offset === (operationB as TextOperation).offset) {
                     (operationA as TextOperation).text = (operationA as TextOperation).text + (operationB as TextOperation).text;
                     mergedOperations.push(operationA);
                 } else {
+                    mergedOperations.push(operationA);
+                    (operationB as TextOperation).offset = (Point.transform({ path: operationB.path, offset: (operationB as TextOperation).offset }, operationA) as any).offset;
+                    mergedOperations.push(operationB);
+                }
+                operationsA.splice(0, 1);
+                operationsB.splice(0, 1);
+                continue;
+            }
+            if (operationA.type === 'remove_text' && operationB.type === 'insert_text') {
+                const aOffset = (operationA as TextOperation).offset;
+                const removeLength = (operationA as TextOperation).text.length;
+                const bOffset = (operationB as TextOperation).offset;
+                if (bOffset <= aOffset) {
+                    mergedOperations.push(operationA);
+                    mergedOperations.push(operationB);
+                }
+                if (bOffset > aOffset && bOffset < aOffset + removeLength) {
+                    mergedOperations.push(operationA);
+                    (operationB as TextOperation).offset = aOffset;
+                    mergedOperations.push(operationB);
+                }
+                if (bOffset >= aOffset + removeLength) {
                     mergedOperations.push(operationA);
                     (operationB as TextOperation).offset = (Point.transform({ path: operationB.path, offset: (operationB as TextOperation).offset }, operationA) as any).offset;
                     mergedOperations.push(operationB);

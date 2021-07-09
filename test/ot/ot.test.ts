@@ -4,6 +4,8 @@ import { slateOperationalTransformation } from '../../src/slate-ot';
 import * as modifyDifferentParagraph from './data/modify-different-paragraph';
 import * as modifySameParagraph from './data/modify-same-paragraph';
 import * as insertTextDifferentOffset from './data/insert-text-different-offset-paragraph';
+import * as removeTextInsertTextParagraph from './data/remove-text-insert-text-paragraph';
+import * as removeTextInsertTextParagraph2 from './data/remove-text-insert-text-paragraph2';
 
 
 describe('changeset', () => {
@@ -49,5 +51,13 @@ describe('slateOperationalTransformation', () => {
     test('insert-text-different-offset-paragraph', () => {
         const operations = slateOperationalTransformation(insertTextDifferentOffset.old, insertTextDifferentOffset.newA, insertTextDifferentOffset.newB);
         expect(operations).toStrictEqual(insertTextDifferentOffset.expected);
+    });
+    test('remove-text-insert-text-paragraph', () => {
+        const operations = slateOperationalTransformation(removeTextInsertTextParagraph.old, removeTextInsertTextParagraph.newA, removeTextInsertTextParagraph.newB);
+        expect(operations).toStrictEqual(removeTextInsertTextParagraph.expected);
+    });
+    test('remove-text-insert-text-paragraph2', () => {
+        const operations = slateOperationalTransformation(removeTextInsertTextParagraph2.old, removeTextInsertTextParagraph2.newA, removeTextInsertTextParagraph2.newB);
+        expect(operations).toStrictEqual(removeTextInsertTextParagraph2.expected);
     });
 });

@@ -1,6 +1,7 @@
 import { slateDiff } from "../../src/slate-diff";
 import * as insertText from './data/insert-text';
-import * as setTextMark from './data/set-text-mark';
+import * as addMark from './data/add-mark';
+import * as insertTextAndAddMark from './data/insert-text-add-mark';
 import * as mergeText from './data/merge-text';
 import * as insertAndUpdateParagraph from './data/insert-and-update-paragraph';
 import * as insertAndUpdateTwoParagraphs from './data/insert-and-update-two-paragraphs';
@@ -10,8 +11,12 @@ describe('slate-diff', () => {
         expect(slateDiff(insertText.doc1, insertText.doc2)).toStrictEqual(insertText.expected);
     });
 
-    test('set-text-mark', () => {
-        expect(slateDiff(setTextMark.doc1, setTextMark.doc2)).toStrictEqual(setTextMark.expected);
+    test('add-mark', () => {
+        expect(slateDiff(addMark.doc1, addMark.doc2)).toStrictEqual(addMark.expected);
+    })
+
+    test('insert-text-and-add-mark', () => {
+        expect(slateDiff(insertTextAndAddMark.doc1, insertTextAndAddMark.doc2)).toStrictEqual(insertTextAndAddMark.expected);
     });
 
     test('merge-text', () => {

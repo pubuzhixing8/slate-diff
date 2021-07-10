@@ -29,7 +29,16 @@ const expected = [
             0,
             0,
         ],
-        text: " 前端 后端",
+        text: " 前端",
+        type: "insert_text",
+    },
+    {
+        offset: 11,
+        path: [
+            0,
+            0,
+        ],
+        text: " 后端",
         type: "insert_text",
     },
 ];
